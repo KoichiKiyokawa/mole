@@ -1,11 +1,14 @@
-import { dig } from "../index" 
+import {
+  dig,
+  validateBrackets,
+  countWordInText
+} from "../index"
 
 describe('dig object', () => {
   const object = {
     animal: {
       marmal: {
-        moles: [
-          {
+        moles: [{
             name: 'Mr. Resetti'
           },
           {
@@ -16,13 +19,17 @@ describe('dig object', () => {
     }
   }
 
-  const result = dig(object, `
-    animal: { marmal: moles: [{name: *}] }
-  `)
-  expect('Mr. Resetti', result)
+  const target_map = `animal: { marmal: moles: [{name: *}] }`
 
+  test('word count', () => {
+    expect(countWordInText('*', '***')).toBe(3)
+    expect(countWordInText('{', target_map)).toBe(2)
+    expect(countWordInText('}', target_map)).toBe(2)
+    expect(countWordInText('[', target_map)).toBe(1)
+    expect(countWordInText(']', target_map)).toBe(1)
+  })
 
-  it('isBracketValid', () => {
-    expect
+  test('brackets are valid', () => {
+    expect(() => { validateBrackets(target_map) })
   })
 })

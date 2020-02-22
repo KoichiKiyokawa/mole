@@ -25,11 +25,9 @@
  * }\`)
  */
 export function dig(target_obj, target_map) {
-  if (!isBracketValid(target_map)) {
-    throw Error('parse error: brackets are not corresponding')
-  }
+  validateBrackets(target_map)
 
-  if (!existsTarget){
+  if (!existsTarget) {
     throw Error('target not found error: you should mark `*` as target')
   }
 
@@ -38,13 +36,12 @@ export function dig(target_obj, target_map) {
   return dig(target_obj[key], next_target_map)
 }
 
-function countWordInText(word, text) {
-  return text.split(word).lenth - 1
+export function countWordInText(word, text) {
+  return text.split(word).length - 1
 }
 
 // validate that the number of bracketStart equals to bracketEnd
-function isBracketValid(target_map) {
-
+export function validateBrackets(target_map) {
   const BRACKETS = [
     ['{', '}'],
     ['[', ']']
@@ -53,13 +50,12 @@ function isBracketValid(target_map) {
     const bracketStartCount = countWordInText(bracketStart, target_map)
     const bracketEndCount = countWordInText(bracketEnd, target_map)
     if (bracketStartCount !== bracketEndCount) {
-      return false
+      // return false
+      throw Error(`parse error: brackets are not corresponding. ${bracketStart} is ${bracketStartCount}, but ${bracketEnd} is ${bracketEndCount}`)
     }
   }
-
-  return true
 }
 
-function existsTarget(target_map) {
-  return countWordInText('*', target_map) >= 1
-}
+  function existsTarget(target_map) {
+    return countWordInText('*', target_map) >= 1
+  }
