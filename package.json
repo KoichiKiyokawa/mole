@@ -1,8 +1,8 @@
 {
-  "name": "mole",
+  "name": "visually-digger",
   "version": "0.1.0",
   "description": "make it easy to dig nested object returned by api.",
-  "repository": "https://github.com/KoichiKiyokawa/mole",
+  "repository": "https://github.com/KoichiKiyokawa/visually-digger",
   "main": "index.js",
   "author": "K.Kiyokawa",
   "license": "MIT",
