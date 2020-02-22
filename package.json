@@ -6,7 +6,7 @@
   "author": "K.Kiyokawa",
   "license": "MIT",
   "scripts": {
-    "test": "jest"
+    "test": "jest --silent=false --verbose false"
   },
   "devDependencies": {
     "@babel/core": "^7.8.4",

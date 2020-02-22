@@ -1,5 +1,5 @@
 /**
- * @param targetObj {Object}
+ * @param targetObject {Object}
  * @param targetMap {String} 
  * @return {any}
  *
@@ -29,32 +29,39 @@
  *
  * you can customize the marker '*' as you want.
  */
-export function dig(targetObj, targetMap, targetMarker = '*') {
+export function dig(targetObject, targetMap, targetMarker = '*') {
   if (targetMarker.match(/^[a-zA-Z]*$/g)) {
     throw Error('target marker should not be composed of only alphabet')
   }
 
-  // e.g. {"animal":{"marmal":{"moles":[{},{"name":"*"}]}}}
-  let strMap = JSON.stringify(targetMap)
 
-  if (countWordInText(targetMarker, target)) {
-    throw Error(`target not found error: you should mark ${targetMarker} as target`)
+  if (countWordInText(targetMarker, JSON.stringify(targetMap)) === 0) {
+    throw Error(`targetMarker not found error: you should mark ${targetMarker} as target`)
   }
 
+  const keys = deepFindKeys(targetMap, targetMarker)
+  for (const key of keys) {
+    targetObject = targetObject[key]
+  }
+  return targetObject
+}
+
+export function deepFindKeys(object, searchString) {
+  // e.g. {"animal":{"marmal":{"moles":[{},{"name":"*"}]}}}
+  let strObjecet = JSON.stringify(object)
 
   const keys = []
-
   while (true) {
+    const [key, objectStartIndex, objectEndIndex] = getNearestObjectKeyAndIndexStartToEnd(JSON.parse(strObjecet), searchString)
+    keys.push(key)
 
-    if (strMap === targetMarker) break
+    // replace nearest object by searchString to process recursively.
+    // e.g. { animal :{ marmal :{ moles :[{}, '*'] } } }
+    strObjecet = strObjecet.substring(0, objectStartIndex) + `"${searchString}"` + strObjecet.substring(objectEndIndex + 1, strObjecet.length)
+    if (strObjecet === `"${searchString}"`) break
   }
 
-
-  let value
-  for (const key of keys.reverse()) {
-    value = value[key]
-  }
-  return value
+  return keys.reverse()
 }
 
 /**
@@ -79,7 +86,7 @@ export function getNearestObjectKeyAndIndexStartToEnd(target, targetMarker) {
       // e.g.
       // {"animal":{"marmal":{"moles":[{},{"name":"*"}]}}}
       //                                  ^ braceStartIndex
-      const braceStartIndex = strTarget.lastIndexOf('{',searchingIndex)
+      const braceStartIndex = strTarget.lastIndexOf('{', searchingIndex)
 
       // e.g.
       // {"animal":{"marmal":{"moles":[{},{"name":"*"}]}}}
@@ -96,24 +103,24 @@ export function getNearestObjectKeyAndIndexStartToEnd(target, targetMarker) {
       }
 
 
-    case ',':
-    case '[':
-      // targetMarker is included in array. e.g. { animal :{ marmal :{ moles :[{}, '*']}}}
+      case ',':
+      case '[':
+        // targetMarker is included in array. e.g. { animal :{ marmal :{ moles :[{}, '*']}}}
 
-      // e.g. {"animal":{"marmal":{"moles":[{},"*"]}}}
-      //                                   ^ bracketStartIndex
-      const bracketStartIndex = strTarget.lastIndexOf('[', searchingIndex)
+        // e.g. {"animal":{"marmal":{"moles":[{},"*"]}}}
+        //                                   ^ bracketStartIndex
+        const bracketStartIndex = strTarget.lastIndexOf('[', searchingIndex)
 
-      // e.g. {"animal":{"marmal":{"moles":[{},"*"]}}}
-      //                                           ^ bracketEndIndex
-      const bracketEndIndex = strTarget.indexOf(']',searchingIndex)
+        // e.g. {"animal":{"marmal":{"moles":[{},"*"]}}}
+        //                                           ^ bracketEndIndex
+        const bracketEndIndex = strTarget.indexOf(']', searchingIndex)
 
-      // e.g. [{}, '*']
-      const includedArray = JSON.parse(strTarget.substring(bracketStartIndex, bracketEndIndex + 1))
+        // e.g. [{}, '*']
+        const includedArray = JSON.parse(strTarget.substring(bracketStartIndex, bracketEndIndex + 1))
 
-      const targetIndex = includedArray.indexOf(targetMarker)
+        const targetIndex = includedArray.indexOf(targetMarker)
 
-      return [targetIndex, bracketStartIndex, bracketEndIndex]
+        return [targetIndex, bracketStartIndex, bracketEndIndex]
   }
 }
 
