@@ -5,9 +5,9 @@
 [![GitHub license](https://img.shields.io/github/license/KoichiKiyokawa/visually-digger)](https://github.com/KoichiKiyokawa/visually-digger)
 
 ## Introduction
-javascript library to dig nested object returned from api.
+JavaScript library to dig nested object returned from api.
 
-if api endpoint returns,
+If api endpoint returns,
 ```js
 { 
   animal: {
