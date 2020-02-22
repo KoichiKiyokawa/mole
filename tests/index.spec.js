@@ -6,23 +6,9 @@ import {
 } from "../index"
 
 describe('dig object', () => {
-  const object = {
-    animal: {
-      marmal: {
-        moles: [{
-            name: 'Mr. Resetti'
-          },
-          {
-            name: 'Don Resetti'
-          }
-        ]
-      }
-    }
-  }
-
   const targetMap = {
     animal: {
-      marmal: {
+      mammal: {
         moles: [{},
           {
             name: '***'
@@ -138,7 +124,7 @@ describe('dig object', () => {
   test("dig second mole's name", () => {
     expect(dig({
       animal: {
-        marmal: {
+        mammal: {
           moles: [{
               name: 'Mr. Resetti'
             },
@@ -150,9 +136,9 @@ describe('dig object', () => {
       }
     }, {
       animal: {
-        marmal: {
+        mammal: {
           moles: [{
-              name: 'Mr. Resetti'
+              name: '_'
             },
             {
               name: '***'
