@@ -31,7 +31,7 @@ import { dig } from 'visually-digger'
 
 dig(object, {
   animal: {
-    marmal: {
+    mammal: {
       moles: [
         { name: '_' },
         { name: '*' } // `*` show the target value you want to get.
@@ -75,6 +75,64 @@ You should change target_marker like this.
 ```js
 dig(object, { '*foo': { bar: '***' } }, '***')
 ```
+
+## Algorithm
+1. Convert target_map to JSON string.
+```js
+JSON.stringify(target_map)
+// => {"animal":{"mammal":{"moles":[{"name":"_"},{"name":"*"}]}}}
+```
+2. From the result of 1, search a object or array that includes target_marker.
+```js
+{"animal":{"mammal":{"moles":[{"name":"_"},{"name":"*"}]}}}
+//                                         ^^^^^^^^^^^^
+=> {"name":"*"}
+```
+3. From the result of 2. get the key and memorize it.
+```js
+{"name":"*"}
+=> 'name'
+// keys <- 'name'
+```
+4. replace the result of 2. by target_marker.
+```js
+{"animal":{"mammal":{"moles":[{"name":"_"},{"name":"*"}]}}}
+//                                         ^^^^^^^^^^^^
+// replace => {"animal":{"mammal":{"moles":[{"name":"_"},"*"]}}}
+```
+5. From the result of 4, search a object or array that includes target_marker(like 2.)
+```js
+{"animal":{"mammal":{"moles":[{"name":"_"},"*"]}}}
+//                           ^^^^^^^^^^^^^^^^^^
+```
+6. get the key(or index) and memorize it.
+```js
+[{"name":"_"},"*"]
+=> 1 (index)
+// keys <- 1
+// keys: ['name', 1]
+```
+7. repeat until the result of replacement is same as target_marker.
+```js
+keys: ['name', 1, 'moles', 'mammal', 'animal']
+```
+8. Using keys, dig a target object
+```js
+let value = object
+for (const key of keys.reverse()) {
+ value = value[key]
+}
+value // => 'Don Resetti' (same as object.animal.mammal.moles[1].name)
+```
+
+## Caution
+If a target object consists only of object, you should just use pure JavaScript like this.
+```js
+// object: { animal: { mamal: { mole: 'Mr. Resetti' } } }
+const { animal: { mamal: { mole } } } = object
+console.log(mole) // => 'Mr. Resetti'
+```
+But, if a target object contains some arrays, this library will be helpful.
 
 ## License
 [MIT](LICENSE)
