@@ -54,14 +54,13 @@ export function deepFindKeys(object, searchString) {
   let strObjecet = JSON.stringify(object)
 
   const keys = []
-  while (true) {
+  while (strObjecet !== `"${searchString}"`) {
     const [key, objectStartIndex, objectEndIndex] = getNearestObjectKeyAndIndexStartToEnd(JSON.parse(strObjecet), searchString)
     keys.push(key)
 
     // replace nearest object by searchString to process recursively.
     // e.g. { animal :{ mammal :{ moles :[{}, '*'] } } }
     strObjecet = strObjecet.substring(0, objectStartIndex) + `"${searchString}"` + strObjecet.substring(objectEndIndex + 1, strObjecet.length)
-    if (strObjecet === `"${searchString}"`) break
   }
 
   return keys.reverse()
