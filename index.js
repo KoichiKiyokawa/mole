@@ -49,6 +49,15 @@ export function dig(targetObject, targetMap, targetMarker = '*') {
   return targetObject
 }
 
+/**
+ * find a given key from nested object and returns keys' array to reach the key.
+ * e.g. object: { a:{ b: 'c' } }
+ * deepFindKeys(object, b) 
+ *   -> ['a', 'b']
+ * @param object {Object}
+ * @param searchString {string}
+ * @return {string[]}
+ */
 export function deepFindKeys(object, searchString) {
   // e.g. {"animal":{"mammal":{"moles":[{},{"name":"*"}]}}}
   let strObjecet = JSON.stringify(object)
