@@ -1,7 +1,7 @@
 import {
   dig,
   countWordInText,
-  deepFindKeys,
+  deepFindKey,
   getNearestObjectKeyAndIndexStartToEnd
 } from "../index"
 
@@ -89,28 +89,28 @@ describe('dig object', () => {
     expect(endIndex).toBe(7)
   })
 
-  test('deepFindKeys in simple object', () => {
-    expect(deepFindKeys({
+  test('deepFindKey in simple object', () => {
+    expect(deepFindKey({
       name: '*'
     }, '*')).toEqual(['name'])
   })
 
-  test('deepFindKeys in simple array', () => {
-    expect(deepFindKeys([0, 1, '*'], '*')).toEqual([2])
+  test('deepFindKey in simple array', () => {
+    expect(deepFindKey([0, 1, '*'], '*')).toEqual([2])
   })
 
-  test('deepFindKeys in simple array if marker changed', () => {
-    expect(deepFindKeys([0, 1, '***'], '***')).toEqual([2])
+  test('deepFindKey in simple array if marker changed', () => {
+    expect(deepFindKey([0, 1, '***'], '***')).toEqual([2])
   })
 
-  test('deepFindKeys with object included by array', () => {
-    expect(deepFindKeys([0, 1, {
+  test('deepFindKey with object included by array', () => {
+    expect(deepFindKey([0, 1, {
       name: '*'
     }], '*')).toEqual([2, 'name'])
   })
 
-  test('deepFindKeys with nested object', () => {
-    expect(deepFindKeys([0, 1, {
+  test('deepFindKey with nested object', () => {
+    expect(deepFindKey([0, 1, {
       first: {
         second: {
           third: {

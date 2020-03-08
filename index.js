@@ -42,7 +42,7 @@ export function dig(targetObject, targetMap, targetMarker = '*') {
     throw Error(`targetMarker not found error: you should mark ${targetMarker} as target`)
   }
 
-  const keys = deepFindKeys(targetMap, targetMarker)
+  const keys = deepFindKey(targetMap, targetMarker)
   for (const key of keys) {
     targetObject = targetObject[key]
   }
@@ -58,7 +58,7 @@ export function dig(targetObject, targetMap, targetMarker = '*') {
  * @param searchString {string}
  * @return {string[]}
  */
-export function deepFindKeys(object, searchString) {
+export function deepFindKey(object, searchString) {
   // e.g. {"animal":{"mammal":{"moles":[{},{"name":"*"}]}}}
   let strObjecet = JSON.stringify(object)
 
