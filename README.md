@@ -21,7 +21,7 @@ If api endpoint returns,
 ```
 and you want to get `'Don Resetti'`, with pure javascript,
 ```js
-object.animal.mammal.moles[1] // => 'Don Resetti'
+object.animal.mammal.moles[1].name // => 'Don Resetti'
 ```
 This code does not show the composition of the object, so it is difficult to understand how is the `object`.
 
