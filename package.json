@@ -1,6 +1,6 @@
 {
   "name": "visually-digger",
-  "version": "0.1.13",
+  "version": "0.1.14",
   "description": "make it easy to dig nested object returned by api.",
   "repository": "https://github.com/KoichiKiyokawa/visually-digger",
   "main": "index.js",
