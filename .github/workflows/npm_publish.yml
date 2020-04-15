@@ -18,6 +18,7 @@ jobs:
 
   publish-npm:
     needs: build
+    if: contains(github.ref, 'tags/v')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
