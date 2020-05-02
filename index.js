@@ -1,11 +1,14 @@
+export const $$target = '**target**'
+export const $$array = (any) => `$$array(${JSON.stringify(any)})`
+
 /**
  * @param targetObject {Object}
- * @param targetMap {String} 
+ * @param targetMap {String}
  * @return {any}
  *
  * a string that presents stucture of object you want to dig.
  * you should mark * as target value.
- * e.g. 
+ * e.g.
  * if api's return value is
  * obj = {
  *   animal: {
@@ -19,12 +22,12 @@
  * }
  *
  * you can get animal.mammal.moles[1].name by
- * dig(obj, { 
+ * dig(obj, {
  *   animal: {
  *     mammal: {
  *       moles: [
  *         {},
- *         { name: '*' }
+ *         { name: $$target }
  *       ]
  *     }
  *   }
@@ -32,51 +35,73 @@
  *
  * you can customize the marker '*' as you want.
  */
-export function dig(targetObject, targetMap, targetMarker = '*') {
+export function dig(targetObject, targetMap, targetMarker = $$target) {
   if (targetMarker.match(/^[a-zA-Z]*$/g)) {
     throw Error('target marker should not be composed of only alphabet')
   }
-
 
   if (countWordInText(targetMarker, JSON.stringify(targetMap)) === 0) {
     throw Error(`targetMarker not found error: you should mark ${targetMarker} as target`)
   }
 
-  const keys = deepFindKey(targetMap, targetMarker)
-  for (const key of keys) {
-    targetObject = targetObject[key]
+  const strObject = JSON.stringify(targetMap)
+  if (strObject.includes('$$array')) {
+    const to$$array = strObject.replace(/\$\$array\(.*\)/, $$target)
+    const strObjectIn$array = strObject.match(/\$\$array\((.*)\)/)[1]
+    console.log({ strObjectIn$array });
+    const replacedStrObjectIn$array = strObjectIn$array
+      .replace(/\\{1,2}"/g, '"')
+      .replace(/\\{3,}"/g, '\"')
+    console.log({ replacedStrObjectIn$array })
+    // const keysIn$array = deepFindValue(JSON.parse(strObjectIn$array), targetMarker)
+    return dig(targetObject, JSON.parse(to$$array))
+        .map(elem => dig(elem, JSON.parse(replacedStrObjectIn$array)))
+        .flat()
   }
-  return targetObject
+
+  const keys = deepFindValue(targetMap, targetMarker)
+  return digFromKeys(targetObject, keys)
+}
+
+function digFromKeys(object, keys) {
+  const quotizeKeys = keys.map(key => typeof key === 'string' ? `"${key}"` : key)
+  const objectName  = Object.keys({object})[0]
+  return eval(`${objectName}[${quotizeKeys.join('][')}]`)
 }
 
 /**
- * find a given key from nested object and returns keys' array to reach the key.
+ * find a given value from nested object and returns keys' array to reach the key.
  * e.g. object: { a:{ b: 'c' } }
- * deepFindKeys(object, b) 
+ * deepFindValues(object, 'c')
  *   -> ['a', 'b']
  * @param object {Object}
- * @param searchString {string}
+ * @param valueString {string}
  * @return {string[]}
  */
-export function deepFindKey(object, searchString) {
+export function deepFindValue(object, valueString) {
   // e.g. {"animal":{"mammal":{"moles":[{},{"name":"*"}]}}}
   let strObjecet = JSON.stringify(object)
 
   const keys = []
-  while (strObjecet !== `"${searchString}"`) {
-    const [key, objectStartIndex, objectEndIndex] = getNearestObjectKeyAndIndexStartToEnd(JSON.parse(strObjecet), searchString)
+  while (true) {
+    const res = getNearestObjectKeyAndIndexStartToEnd(JSON.parse(strObjecet), valueString)
+    const [key, objectStartIndex, objectEndIndex] = res
     keys.push(key)
 
-    // replace nearest object by searchString to process recursively.
+    if (strObjecet.length === objectEndIndex - objectStartIndex + 1) break
+
+    // replace nearest object by valueString to process recursively.
     // e.g. { animal :{ mammal :{ moles :[{}, '*'] } } }
-    strObjecet = strObjecet.substring(0, objectStartIndex) + `"${searchString}"` + strObjecet.substring(objectEndIndex + 1, strObjecet.length)
+    strObjecet = strObjecet.substring(0, objectStartIndex) +
+      `"${valueString}"` +
+      strObjecet.substring(objectEndIndex + 1, strObjecet.length)
   }
 
   return keys.reverse()
 }
 
 /**
- * @param strTarget {Object or Array} e.g. { name: '*' }
+ * @param target {Object or Array} e.g. { name: "*" }
  * @param targetMarker {String} e.g. '*'
  * @return {String} key name e.g. 'name'
  *         {Integer} object's start index after JSON.stringify e.g. 0
@@ -86,7 +111,7 @@ export function getNearestObjectKeyAndIndexStartToEnd(target, targetMarker) {
   const strTarget = JSON.stringify(target)
   // e.g.
   // {"animal":{"mammal":{"moles":[{},{"name":"*"}]}}}
-  //                                          ^ firstTargetIndex                                      
+  //                                          ^ firstTargetIndex
   const firstTargetIndex = strTarget.indexOf(`"${targetMarker}"`)
   const searchingIndex = firstTargetIndex - 1
 
