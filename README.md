@@ -1,4 +1,4 @@
-# visually-digger
+# smart-mole
 ![](https://github.com/KoichiKiyokawa/visually-digger/workflows/GitHub%20Actions/badge.svg)
 [![npm version](https://badge.fury.io/js/visually-digger.svg)](https://badge.fury.io/js/visually-digger)
 [![GitHub issues](https://img.shields.io/github/issues/KoichiKiyokawa/visually-digger)](https://github.com/KoichiKiyokawa/visually-digger/issues)
@@ -11,50 +11,56 @@ If api endpoint returns,
 ```js
 { 
   animal: {
-   mammal: {
-     moles: [
-       { name: 'Mr. Resetti' },
-       { name: 'Don Resetti' }
-     ]
+    mammal: {
+      moles: [
+        {
+          name: 'parent1',
+          children: [{ name: 'child1-1' }, { name: 'child1-2' }]
+         },
+        {
+          name: 'parent2',
+          children: [{ name: 'child2-1' }, { name: 'child2-2' }]
+        }
+      ]
+    }
   }
 }
 ```
-and you want to get `'Don Resetti'`, with pure javascript,
+and you want to get `['child1-2', 'child1-2', 'child2-1', 'child2-2']`, with pure javascript,
 ```js
-object.animal.mammal.moles[1].name // => 'Don Resetti'
+object.animal.mammal.moles.map(mole => mole.children.name) // => ['child1-2', 'child1-2', 'child2-1', 'child2-2']
 ```
 This code does not show the composition of the object, so it is difficult to understand how is the `object`.
 
 On the other hand, with this library,
 ```js
-import { dig } from 'visually-digger'
+import { dig, $$target, $$array } from 'smart-mole'
 
-dig(object, {
+dig(obj, {
   animal: {
     mammal: {
-      moles: [
-        { name: '_' },
-        { name: '*' } // `*` show the target value you want to get.
-      ]
+      moles: $$array({
+        children: $$array({ name: $$target })
+      })
     }
   }
 })
-// => 'Don Resetti'
+// => ['child1-2', 'child1-2', 'child2-1', 'child2-2']
 ```
 
 ## Quick start
 ### Install
 ```console
-npm i visually-digger
+npm i smart-mole
 ```
 or
 ```console
-yarn add visually-digger
+yarn add smart-mole
 ```
 
 ### How to use
 ```js
-import { dig } from 'visually-digger'
+import { dig } from smart-mole
 
 dig(<target_object>, <target_map>, <target_marker>)
 ```
@@ -62,14 +68,14 @@ argument|description
 --|--
 target_object|object or array you want to dig
 target_map|object or array presenting target location, by marking target with `target_marker`
-target_marker|optional, default is `*`
+target_marker|optional, default is `$$target` which is a constant of `**target**`
 
 Note that target_marker should _NOT_ be included in any keys of <target_object>.
 if included, it will cause a bug.  
 Bad example:
 ```js
-const object = { '*foo': { bar: 1} }
-dig(object, { '*foo': { bar: '*' } }
+const object = { '**target**': { bar: 1 } }
+dig(object, { '**target**': { bar: $$target } }
 ```
 You should change target_marker like this.
 ```js
@@ -126,13 +132,24 @@ value // => 'Don Resetti' (same as object.animal.mammal.moles[1].name)
 ```
 
 ## Caution
-If a target object consists only of object, you should just use pure JavaScript like this.
+You should just use [Destructuring assignment](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment) in some case.
 ```js
-// object: { animal: { mamal: { mole: 'Mr. Resetti' } } }
-const { animal: { mamal: { mole } } } = object
-console.log(mole) // => 'Mr. Resetti'
+/*
+object is {
+  animal: {
+    mamal: {
+      moles: [
+        { name: 'Mr. Resetti' },
+        { name: 'Don Resetti' }
+      ]
+    }
+  }
+}
+*/
+// you can get 'Don Resetti' by the folloing method
+const { animal: { mamal: { moles: [, { name }] } } } = object
+console.log(mole) // => 'Don Resetti'
 ```
-But, if a target object contains some arrays, this library will be helpful.
 
 ## License
 [MIT](LICENSE)
