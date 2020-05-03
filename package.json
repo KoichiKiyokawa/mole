@@ -1,6 +1,6 @@
 {
   "name": "smart-mole",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "make it easy to dig nested object returned by api.",
   "repository": "https://github.com/KoichiKiyokawa/smart-mole",
   "main": "index.js",
