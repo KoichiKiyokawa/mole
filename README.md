@@ -36,7 +36,7 @@ On the other hand, with this library,
 ```js
 import { dig, $$target, $$array } from 'smart-mole'
 
-dig(nestedObj, {
+dig(obj, {
   animal: {
     mammal: {
       moles: $$array({
@@ -134,12 +134,22 @@ value // => 'Don Resetti' (same as object.animal.mammal.moles[1].name)
 ## Caution
 You should just use [Destructuring assignment](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment) in some case.
 ```js
-// object: { animal: { mamal: { moles: [ { name: 'Mr. Resetti' }, { name: 'Don Resetti' } } }
-// you can get 'Don Resetti' by folloing method
-const { animal: { mamal: { mole } } } = object
-console.log(mole) // => 'Mr. Resetti'
+/*
+object is {
+  animal: {
+    mamal: {
+      moles: [
+        { name: 'Mr. Resetti' },
+        { name: 'Don Resetti' }
+      ]
+    }
+  }
+}
+*/
+// you can get 'Don Resetti' by the folloing method
+const { animal: { mamal: { moles: [, { name }] } } } = object
+console.log(mole) // => 'Don Resetti'
 ```
-But, if a target object contains some arrays, this library will be helpful.
 
 ## License
 [MIT](LICENSE)
