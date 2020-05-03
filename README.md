@@ -148,7 +148,7 @@ object is {
 */
 // you can get 'Don Resetti' by the folloing method
 const { animal: { mamal: { moles: [, { name }] } } } = object
-console.log(mole) // => 'Don Resetti'
+console.log(name) // => 'Don Resetti'
 ```
 
 ## License
