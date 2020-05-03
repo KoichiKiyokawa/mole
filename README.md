@@ -1,15 +1,15 @@
 # smart-mole
-![](https://github.com/KoichiKiyokawa/visually-digger/workflows/GitHub%20Actions/badge.svg)
-[![npm version](https://badge.fury.io/js/visually-digger.svg)](https://badge.fury.io/js/visually-digger)
-[![GitHub issues](https://img.shields.io/github/issues/KoichiKiyokawa/visually-digger)](https://github.com/KoichiKiyokawa/visually-digger/issues)
-[![GitHub license](https://img.shields.io/github/license/KoichiKiyokawa/visually-digger)](https://github.com/KoichiKiyokawa/visually-digger)
+![](https://github.com/KoichiKiyokawa/smart-mole/workflows/GitHub%20Actions/badge.svg)
+[![npm version](https://badge.fury.io/js/smart-mole.svg)](https://badge.fury.io/js/smart-mole)
+[![GitHub issues](https://img.shields.io/github/issues/KoichiKiyokawa/smart-mole)](https://github.com/KoichiKiyokawa/smart-mole/issues)
+[![GitHub license](https://img.shields.io/github/license/KoichiKiyokawa/smart-mole)](https://github.com/KoichiKiyokawa/smart-mole)
 
 ## Introduction
 JavaScript library to dig nested object returned from api.
 
 If api endpoint returns,
 ```js
-{ 
+{
   animal: {
     mammal: {
       moles: [
@@ -71,7 +71,7 @@ target_map|object or array presenting target location, by marking target with `t
 target_marker|optional, default is `$$target` which is a constant of `**target**`
 
 Note that target_marker should _NOT_ be included in any keys of <target_object>.
-if included, it will cause a bug.  
+if included, it will cause a bug.
 Bad example:
 ```js
 const object = { '**target**': { bar: 1 } }
