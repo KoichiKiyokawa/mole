@@ -79,7 +79,7 @@ dig(object, { '**target**': { bar: $$target } }
 ```
 You should change target_marker like this.
 ```js
-dig(object, { '*foo': { bar: '***' } }, '***')
+dig(object, { '**target**': { bar: '***' } }, '***')
 ```
 
 ## Algorithm
