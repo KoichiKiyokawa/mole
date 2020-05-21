@@ -28,7 +28,10 @@ If api endpoint returns,
 ```
 and you want to get `['child1-2', 'child1-2', 'child2-1', 'child2-2']`, with pure javascript,
 ```js
-object.animal.mammal.moles.map(mole => mole.children.name) // => ['child1-2', 'child1-2', 'child2-1', 'child2-2']
+object.animal.mammal.moles.map(mole => mole.children.map(child => child.name)).flat()
+// or
+object.animal.mammal.moles.flatMap(mole => mole.children.map(child => child.name))
+// => ['child1-2', 'child1-2', 'child2-1', 'child2-2']
 ```
 This code does not show the composition of the object, so it is difficult to understand how is the `object`.
 
